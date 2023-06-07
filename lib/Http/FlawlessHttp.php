@@ -9,6 +9,7 @@ use Flawless\Http\Request\Request;
 
 class FlawlessHttp
 {
+    private Container $container;
 
     public function __construct(
         private HttpApplication $application
@@ -21,7 +22,17 @@ class FlawlessHttp
         $request = Request::fromGlobals();
         $endpointFactory = new EndpointHandlerFactory($container);
         $application = new HttpApplication($request, $endpointFactory);
-        return new self($application);
+        $self = new self($application);
+        $self->container = $container;
+        return $self;
+    }
+
+    public function registerConfigFrom(string $configFile)
+    {
+        $params = require($configFile);
+        foreach ($params as $key => $value) {
+            $this->container->register($key, $value);
+        }
     }
 
     public function app()

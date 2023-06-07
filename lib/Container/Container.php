@@ -9,11 +9,11 @@ use ReflectionParameter;
 
 class Container implements ContainerInterface
 {
-    private array $objects = [];
+    private array $parameters = [];
 
     public function get(string $id)
     {
-        return $this->objects[$id] ?? $this->prepareObject($id);
+        return $this->parameters[$id] ?? $this->prepareObject($id);
     }
 
     public function has(string $id): bool
@@ -27,10 +27,10 @@ class Container implements ContainerInterface
 
     public function register(string $id, $value)
     {
-        $this->objects[$id] = $value;
+        $this->parameters[$id] = $value;
     }
 
-    public function prepareObject(string $id)
+    private function prepareObject(string $id)
     {
         if (!class_exists($id)) {
             throw new ContainerException("Not found object $id");
@@ -40,7 +40,13 @@ class Container implements ContainerInterface
         $constructorParameters = $reflection->getConstructor()?->getParameters() ?? [];
 
         $constructorParameters = array_map(
-            fn(ReflectionParameter $parameter) => $this->get($parameter->getType()->getName()),
+            function (ReflectionParameter $parameter) {
+                $id = $parameter->getName();
+                if (!$this->has($id)) {
+                    $id = $parameter->getType()->getName();
+                }
+                return $this->get($id);
+            },
             $constructorParameters
         );
 
