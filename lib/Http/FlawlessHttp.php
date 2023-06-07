@@ -4,6 +4,7 @@ namespace Flawless\Http;
 
 use Flawless\Container\Container;
 use Flawless\Http\Application\HttpApplication;
+use Flawless\Http\Endpoint\Endpoint;
 use Flawless\Http\Endpoint\EndpointHandlerFactory;
 use Flawless\Http\Request\Request;
 
@@ -27,6 +28,11 @@ class FlawlessHttp
         return $self;
     }
 
+    public static function endpoint(string $method, string $uri, string $handlerClass): Endpoint
+    {
+        return new Endpoint($method, $uri, $handlerClass);
+    }
+
     public function registerConfigFrom(string $configFile)
     {
         $params = require($configFile);
@@ -35,8 +41,30 @@ class FlawlessHttp
         }
     }
 
+    public function registerEndpointsFrom(string $endpointsFile)
+    {
+        $endpointMap = require($endpointsFile);
+        $this->registerPrefixEndpoint('', $endpointMap);
+    }
+
     public function app()
     {
         return $this->application;
+    }
+
+    private function registerPrefixEndpoint(string $prefix, array $endpoints)
+    {
+        foreach ($endpoints as $key => $endpoint) {
+            if (is_array($endpoint)) {
+                $this->registerPrefixEndpoint("$prefix$key", $endpoint);
+            } else {
+                $this->registerEndpoint($endpoint->addPrefix($prefix));
+            }
+        }
+    }
+
+    private function registerEndpoint(Endpoint $endpoint)
+    {
+        $this->app()->registerEndpoint($endpoint);
     }
 }

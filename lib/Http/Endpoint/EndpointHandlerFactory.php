@@ -9,6 +9,9 @@ class EndpointHandlerFactory
 {
     protected array $endpointHandlers = [];
 
+    /** @var Endpoint[] */
+    protected array $endpoints = [];
+
     public function __construct(
         private ContainerInterface $container,
     ) {
@@ -16,27 +19,21 @@ class EndpointHandlerFactory
 
     public function createHandlerFromRequest(Request $request): ?EndpointHandlerInterface
     {
-        foreach ($this->endpointHandlers as $class => [$method, $uri]) {
-            if (
-                $request->getMethod() === $method &&
-                $this->uriMatchesRequest($uri, $request)
-            ) {
-                return $this->container->get($class);
+        foreach ($this->endpoints as $endpoint) {
+            if ($this->requestMatchesEndpoint($request, $endpoint)) {
+                return $this->container->get($endpoint->handlerClass);
             }
         }
         return null;
     }
 
-    public function registerEndpoint(string $method, string $uri, string $handlerClass)
+    public function registerEndpoint(Endpoint $endpoint)
     {
-        $this->endpointHandlers[$handlerClass] = [
-            $method,
-            $uri,
-        ];
+        $this->endpoints[] = $endpoint;
     }
 
-    private function uriMatchesRequest(string $uri, Request $request): bool
+    private function requestMatchesEndpoint(Request $request, Endpoint $endpoint): bool
     {
-        return $uri === $request->getUri();
+        return $endpoint->uri === $request->getUri();
     }
 }

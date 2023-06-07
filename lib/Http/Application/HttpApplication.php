@@ -2,6 +2,7 @@
 
 namespace Flawless\Http\Application;
 
+use Flawless\Http\Endpoint\Endpoint;
 use Flawless\Http\Endpoint\EndpointHandlerFactory;
 use Flawless\Http\Request\Request;
 use Flawless\Http\Response\Response;
@@ -16,9 +17,9 @@ class HttpApplication
     ) {
     }
 
-    public function registerEndpoint(string $method, string $uri, string $handlerClass)
+    public function registerEndpoint(Endpoint $endpoint)
     {
-        $this->endpointHandlerFactory->registerEndpoint($method, $uri, $handlerClass);
+        $this->endpointHandlerFactory->registerEndpoint($endpoint);
     }
 
     public function execute()
