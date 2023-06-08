@@ -34,28 +34,36 @@ class FlawlessHttp
         string $method,
         string $uri,
         string $handlerClass,
-        array $middleware = [],
     ): Endpoint {
-        return new Endpoint($method, $uri, $handlerClass, $middleware);
+        return new Endpoint($method, $uri, $handlerClass);
     }
 
-    public function registerConfigFrom(string $configFile)
+    public function registerConfigFrom(string $configFile): self
     {
         $params = require($configFile);
         foreach ($params as $key => $value) {
             $this->container->register($key, $value);
         }
+        return $this;
     }
 
-    public function registerEndpointsFrom(string $endpointsFile)
+    public function registerEndpointsFrom(string $endpointsFile): self
     {
         $endpointMap = require($endpointsFile);
         $this->registerPrefixEndpoint('', $endpointMap);
+        return $this;
     }
 
-    public function execute()
+    public function execute(): self
     {
         $this->application->execute($this->request);
+        return $this;
+    }
+
+    public function enableGlobalMiddleware(string $middlewareClass): self
+    {
+        $this->application->enableGlobalMiddleware($middlewareClass);
+        return $this;
     }
 
     private function registerPrefixEndpoint(string $prefix, array $endpoints)

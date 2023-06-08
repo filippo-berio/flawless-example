@@ -16,6 +16,8 @@ class HttpApplication
     /** @var Endpoint[] */
     protected array $endpoints = [];
 
+    private array $globalMiddlewareClasses = [];
+
     public function __construct(
         protected ContainerInterface $container,
     ) {
@@ -27,6 +29,11 @@ class HttpApplication
         header("Content-Type: {$response->getContentType()}");
         http_response_code($response->getStatusCode());
         echo $response->getBody();
+    }
+
+    public function registerEndpoint(Endpoint $endpoint)
+    {
+        $this->endpoints[] = $endpoint;
     }
 
     private function createResponse(Request $request): ResponseInterface
@@ -41,27 +48,25 @@ class HttpApplication
         return $handler->handle($request);
     }
 
-    public function registerEndpoint(Endpoint $endpoint)
-    {
-        $this->endpoints[] = $endpoint;
-    }
-
     private function handleMiddleware(Request $request): Request
     {
         $endpoint = $this->getEndpoint($request);
-        foreach ($endpoint->middlewares as $middlewareClass) {
+        $middlewares = [
+            ...$this->globalMiddlewareClasses,
+            ...$endpoint->middlewares,
+        ];
+        foreach ($middlewares as $middlewareClass) {
             /** @var MiddlewareInterface $middleware */
             $middleware = $this->container->get($middlewareClass);
-
             $request = $middleware->handle($request);
         }
 
         return $request;
     }
 
-    private function getMiddlewares(Request $request): array
+    public function enableGlobalMiddleware(string $middlewareClass)
     {
-
+        $this->globalMiddlewareClasses[] = $middlewareClass;
     }
 
     private function requestMatchesEndpoint(Request $request, Endpoint $endpoint): bool

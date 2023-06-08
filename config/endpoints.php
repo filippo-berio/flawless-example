@@ -14,8 +14,10 @@ return [
     FlawlessHttp::endpoint('GET', '/hello', HelloEndpointHandler::class),
     '/api' => [
         '/v1' => [
-            FlawlessHttp::endpoint('GET', '/one', OneHandler::class, $apiMiddleware),
-            FlawlessHttp::endpoint('GET', '/two', TwoHandler::class, $apiMiddleware),
+            FlawlessHttp::endpoint('GET', '/one', OneHandler::class)
+                ->withMiddleware($apiMiddleware),
+            FlawlessHttp::endpoint('GET', '/two', TwoHandler::class)
+                ->withMiddleware($apiMiddleware),
         ]
     ]
 ];
