@@ -3,44 +3,80 @@
 namespace Flawless\Http\Application;
 
 use Flawless\Http\Endpoint\Endpoint;
-use Flawless\Http\Endpoint\EndpointHandlerFactory;
+use Flawless\Http\Endpoint\EndpointHandlerInterface;
+use Flawless\Http\Middleware\MiddlewareInterface;
 use Flawless\Http\Request\Request;
 use Flawless\Http\Response\Response;
 use Flawless\Http\Response\ResponseInterface;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 class HttpApplication
 {
+    /** @var Endpoint[] */
+    protected array $endpoints = [];
+
     public function __construct(
-        protected Request $request,
-        protected EndpointHandlerFactory $endpointHandlerFactory,
+        protected ContainerInterface $container,
     ) {
     }
 
-    public function registerEndpoint(Endpoint $endpoint)
+    public function execute(Request $request)
     {
-        $this->endpointHandlerFactory->registerEndpoint($endpoint);
-    }
-
-    public function execute()
-    {
-        $response = $this->createResponse();
+        $response = $this->createResponse($request);
         header("Content-Type: {$response->getContentType()}");
         http_response_code($response->getStatusCode());
         echo $response->getBody();
     }
 
-    private function createResponse(): ResponseInterface
+    private function createResponse(Request $request): ResponseInterface
     {
-        $handler = $this->endpointHandlerFactory->createHandlerFromRequest($this->request);
-        if (!$handler) {
+        $endpoint = $this->getEndpoint($request);
+        if (!$endpoint) {
             return new Response('Endpoint not found', 404);
         }
 
-        try {
-            return $handler->handle($this->request);
-        } catch (Throwable $exception) {
-            return new Response($exception->getMessage(), 500);
+        $request = $this->handleMiddleware($request);
+        $handler = $this->container->get($endpoint->handlerClass);
+        return $handler->handle($request);
+    }
+
+    public function registerEndpoint(Endpoint $endpoint)
+    {
+        $this->endpoints[] = $endpoint;
+    }
+
+    private function handleMiddleware(Request $request): Request
+    {
+        $endpoint = $this->getEndpoint($request);
+        foreach ($endpoint->middlewares as $middlewareClass) {
+            /** @var MiddlewareInterface $middleware */
+            $middleware = $this->container->get($middlewareClass);
+
+            $request = $middleware->handle($request);
         }
+
+        return $request;
+    }
+
+    private function getMiddlewares(Request $request): array
+    {
+
+    }
+
+    private function requestMatchesEndpoint(Request $request, Endpoint $endpoint): bool
+    {
+        return $endpoint->uri === $request->getUri() &&
+            $endpoint->method === $request->getMethod();
+    }
+
+    private function getEndpoint(Request $request): ?Endpoint
+    {
+        foreach ($this->endpoints as $endpoint) {
+            if ($this->requestMatchesEndpoint($request, $endpoint)) {
+                return $endpoint;
+            }
+        }
+        return null;
     }
 }

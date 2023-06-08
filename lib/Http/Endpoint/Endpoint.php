@@ -7,7 +7,8 @@ class Endpoint
     public function __construct(
         public string $method,
         public string $uri,
-        public string $handlerClass
+        public string $handlerClass,
+        public array  $middlewares = [],
     ) {
     }
 

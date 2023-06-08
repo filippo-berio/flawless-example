@@ -7,8 +7,6 @@ use Psr\Container\ContainerInterface;
 
 class EndpointHandlerFactory
 {
-    protected array $endpointHandlers = [];
-
     /** @var Endpoint[] */
     protected array $endpoints = [];
 

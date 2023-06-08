@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'name' => 'Flawless'
+    'name' => 'Flawless',
+    'apiKey' => '1234567890'
 ];

@@ -24,6 +24,7 @@ class Request
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $_SERVER['REQUEST_URI'];
+        $uri = strtok($uri, '?');
         return new Request($method, $uri, $_GET, getallheaders());
     }
 

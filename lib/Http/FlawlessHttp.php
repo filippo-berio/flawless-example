@@ -5,12 +5,12 @@ namespace Flawless\Http;
 use Flawless\Container\Container;
 use Flawless\Http\Application\HttpApplication;
 use Flawless\Http\Endpoint\Endpoint;
-use Flawless\Http\Endpoint\EndpointHandlerFactory;
 use Flawless\Http\Request\Request;
 
 class FlawlessHttp
 {
     private Container $container;
+    private Request $request;
 
     public function __construct(
         private HttpApplication $application
@@ -20,17 +20,23 @@ class FlawlessHttp
     public static function boot(): self
     {
         $container = new Container();
+        $application = new HttpApplication($container);
+
         $request = Request::fromGlobals();
-        $endpointFactory = new EndpointHandlerFactory($container);
-        $application = new HttpApplication($request, $endpointFactory);
         $self = new self($application);
         $self->container = $container;
+        $self->request = $request;
+
         return $self;
     }
 
-    public static function endpoint(string $method, string $uri, string $handlerClass): Endpoint
-    {
-        return new Endpoint($method, $uri, $handlerClass);
+    public static function endpoint(
+        string $method,
+        string $uri,
+        string $handlerClass,
+        array $middleware = [],
+    ): Endpoint {
+        return new Endpoint($method, $uri, $handlerClass, $middleware);
     }
 
     public function registerConfigFrom(string $configFile)
@@ -47,9 +53,9 @@ class FlawlessHttp
         $this->registerPrefixEndpoint('', $endpointMap);
     }
 
-    public function app()
+    public function execute()
     {
-        return $this->application;
+        $this->application->execute($this->request);
     }
 
     private function registerPrefixEndpoint(string $prefix, array $endpoints)
@@ -58,13 +64,9 @@ class FlawlessHttp
             if (is_array($endpoint)) {
                 $this->registerPrefixEndpoint("$prefix$key", $endpoint);
             } else {
-                $this->registerEndpoint($endpoint->addPrefix($prefix));
+                /** @var Endpoint $endpoint */
+                $this->application->registerEndpoint($endpoint->addPrefix($prefix));
             }
         }
-    }
-
-    private function registerEndpoint(Endpoint $endpoint)
-    {
-        $this->app()->registerEndpoint($endpoint);
     }
 }
