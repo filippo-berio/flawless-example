@@ -1,5 +1,6 @@
 <?php
 
+use App\Endpoint\GraphEndpointHandler;
 use App\Endpoint\HelloEndpointHandler;
 use App\Endpoint\OneHandler;
 use App\Endpoint\TwoHandler;
@@ -12,6 +13,7 @@ $apiMiddleware = [
 
 return [
     FlawlessHttp::endpoint('GET', '/hello', HelloEndpointHandler::class),
+    FlawlessHttp::endpoint('GET','/graph', GraphEndpointHandler::class),
     '/api' => [
         '/v1' => [
             FlawlessHttp::endpoint('GET', '/one', OneHandler::class)
