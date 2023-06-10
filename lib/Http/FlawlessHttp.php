@@ -23,6 +23,7 @@ class FlawlessHttp
         $application = new HttpApplication($container);
 
         $request = Request::fromGlobals();
+
         $self = new self($application);
         $self->container = $container;
         $self->request = $request;
@@ -63,6 +64,12 @@ class FlawlessHttp
     public function enableGlobalMiddleware(string $middlewareClass): self
     {
         $this->application->enableGlobalMiddleware($middlewareClass);
+        return $this;
+    }
+
+    public function bind(string $id, string $actualId): self
+    {
+        $this->container->bind($id, $actualId);
         return $this;
     }
 

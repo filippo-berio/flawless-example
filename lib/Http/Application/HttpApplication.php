@@ -9,7 +9,6 @@ use Flawless\Http\Request\Request;
 use Flawless\Http\Response\Response;
 use Flawless\Http\Response\ResponseInterface;
 use Psr\Container\ContainerInterface;
-use Throwable;
 
 class HttpApplication
 {
@@ -26,14 +25,17 @@ class HttpApplication
     public function execute(Request $request)
     {
         $response = $this->createResponse($request);
-        header("Content-Type: {$response->getContentType()}");
-        http_response_code($response->getStatusCode());
-        echo $response->getBody();
+        $this->sendResponse($response);
     }
 
     public function registerEndpoint(Endpoint $endpoint)
     {
         $this->endpoints[] = $endpoint;
+    }
+
+    public function enableGlobalMiddleware(string $middlewareClass)
+    {
+        $this->globalMiddlewareClasses[] = $middlewareClass;
     }
 
     private function createResponse(Request $request): ResponseInterface
@@ -44,8 +46,16 @@ class HttpApplication
         }
 
         $request = $this->handleMiddleware($request);
+        /** @var EndpointHandlerInterface $handler */
         $handler = $this->container->get($endpoint->handlerClass);
         return $handler->handle($request);
+    }
+
+    private function sendResponse(ResponseInterface $response)
+    {
+        header("Content-Type: {$response->getContentType()}");
+        http_response_code($response->getStatusCode());
+        echo $response->getBody();
     }
 
     private function handleMiddleware(Request $request): Request
@@ -62,11 +72,6 @@ class HttpApplication
         }
 
         return $request;
-    }
-
-    public function enableGlobalMiddleware(string $middlewareClass)
-    {
-        $this->globalMiddlewareClasses[] = $middlewareClass;
     }
 
     private function requestMatchesEndpoint(Request $request, Endpoint $endpoint): bool
