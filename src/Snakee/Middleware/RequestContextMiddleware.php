@@ -3,7 +3,7 @@
 namespace App\Snakee\Middleware;
 
 use Flawless\Http\Request\Request;
-use Flawless\Http\Snakee\BaseRequestMiddleware;
+use Flawless\Http\Snakee\Middleware\BaseRequestMiddleware;
 
 class RequestContextMiddleware extends BaseRequestMiddleware
 {

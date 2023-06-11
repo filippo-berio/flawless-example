@@ -5,33 +5,34 @@ namespace App\Endpoint;
 use App\Snakee\Node\NodeA;
 use App\Snakee\Node\NodeB;
 use App\Snakee\Node\NodeC;
-use Flawless\Http\Endpoint\EndpointHandlerInterface;
 use Flawless\Http\Request\Request;
 use Flawless\Http\Response\Response;
 use Flawless\Http\Response\ResponseInterface;
-use Flawless\Snakee\Context\ExecutionContext;
-use Flawless\Snakee\Manager;
+use Flawless\Http\Snakee\Endpoint\BaseSnakeeEndpointHandler;
+use Flawless\Snakee\Context\ContextInterface;
 
-class GraphEndpointHandler implements EndpointHandlerInterface
+class GraphEndpointHandler extends BaseSnakeeEndpointHandler
 {
-    public function __construct(
-        private Manager $manager
-    ) {
-    }
+    private Request $request;
 
     public function handle(Request $request): ResponseInterface
     {
-        $context = new ExecutionContext([
-            'num' => $request->getQuery()->get('num'),
-        ]);
-        $this->manager->setContext($context);
-        $context = $this->manager->run([
+        $this->request = $request;
+        return parent::handle($request);
+    }
+
+    protected function buildResponse(ContextInterface $context): ResponseInterface
+    {
+        return new Response($context->get('response'));
+    }
+
+    protected function getGraph(): array
+    {
+        return [
             NodeA::class => [
                 0 => NodeB::class,
                 1 => NodeC::class,
             ]
-        ]);
-        $text = $context->safeGet('response');
-        return new Response($text);
+        ];
     }
 }

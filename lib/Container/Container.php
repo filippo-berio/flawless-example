@@ -9,14 +9,13 @@ use ReflectionParameter;
 
 class Container implements ContainerInterface
 {
-    private array $parameters;
+    private array $parameters = [];
     private array $binds = [];
 
     public function __construct()
     {
-        $this->parameters = [
-            $this::class => $this
-        ];
+        $this->register($this::class, $this);
+        $this->bind(ContainerInterface::class, $this::class);
     }
 
     public function get(string $id)

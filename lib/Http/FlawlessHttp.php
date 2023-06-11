@@ -6,11 +6,15 @@ use Flawless\Container\Container;
 use Flawless\Http\Application\HttpApplication;
 use Flawless\Http\Endpoint\Endpoint;
 use Flawless\Http\Request\Request;
+use Flawless\Http\Snakee\Middleware\BaseRequestMiddleware;
+use Flawless\Snakee\Snakee;
+use Flawless\Snakee\SnakeeConfiguratorInterface;
 
 class FlawlessHttp
 {
     private Container $container;
     private Request $request;
+    private ?Snakee $snakee = null;
 
     public function __construct(
         private HttpApplication $application
@@ -20,7 +24,7 @@ class FlawlessHttp
     public static function boot(): self
     {
         $container = new Container();
-        $application = new HttpApplication($container);
+        $application = $container->get(HttpApplication::class);
 
         $request = Request::fromGlobals();
 
@@ -37,6 +41,23 @@ class FlawlessHttp
         string $handlerClass,
     ): Endpoint {
         return new Endpoint($method, $uri, $handlerClass);
+    }
+
+    public function snakee(array $requestMiddlewares = []): SnakeeConfiguratorInterface
+    {
+        if (!$this->snakee) {
+            $this->snakee = $this->container->get(Snakee::class);
+            $this->container->register(Snakee::class, $this->snakee);
+        }
+
+        foreach ($requestMiddlewares as $middlewareClass) {
+            /** @var BaseRequestMiddleware $middleware */
+            $middleware = $this->container->get($middlewareClass);
+            $middleware->setRequest($this->request);
+            $this->snakee->addContextMiddleware($middleware);
+        }
+
+        return $this->snakee;
     }
 
     public function registerConfigFrom(string $configFile): self
@@ -61,7 +82,7 @@ class FlawlessHttp
         return $this;
     }
 
-    public function enableGlobalMiddleware(string $middlewareClass): self
+    public function enableGlobalMiddleware($middlewareClass): self
     {
         $this->application->enableGlobalMiddleware($middlewareClass);
         return $this;

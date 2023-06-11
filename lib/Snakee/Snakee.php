@@ -2,14 +2,13 @@
 
 namespace Flawless\Snakee;
 
-use Flawless\Http\Middleware\MiddlewareInterface;
 use Flawless\Snakee\Context\ContextInterface;
 use Flawless\Snakee\Context\ContextMiddlewareInterface;
 use Flawless\Snakee\Context\ExecutionContext;
 use Flawless\Snakee\Node\NodeInterface;
 use Psr\Container\ContainerInterface;
 
-class Manager
+class Snakee implements SnakeeConfiguratorInterface
 {
     private ContextInterface $context;
 
@@ -28,9 +27,12 @@ class Manager
         return $this;
     }
 
-    public function addContextMiddleware(MiddlewareInterface $middlewares): self
+    public function addContextMiddleware($middleware): self
     {
-        $this->middlewares[] = $middlewares;
+        if (is_string($middleware)) {
+            $middleware = $this->container->get($middleware);
+        }
+        $this->middlewares[] = $middleware;
         return $this;
     }
 
