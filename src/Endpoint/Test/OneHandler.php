@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Endpoint;
+namespace App\Endpoint\Test;
 
 use Flawless\Http\Application\HttpApplication;
 use Flawless\Http\Endpoint\EndpointHandlerInterface;

@@ -13,4 +13,6 @@ interface ContextInterface
     public function clear(string $key): self;
 
     public function setObject(object $object);
+
+    public function all(): array;
 }

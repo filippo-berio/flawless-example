@@ -8,11 +8,10 @@ class Request
 
     private RequestParameters $headers;
 
-    private $body;
-
     public function __construct(
         private string $method,
         private string $uri,
+        private ?string $body = null,
         array $query = [],
         array $headers = [],
     ) {
@@ -25,7 +24,7 @@ class Request
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $_SERVER['REQUEST_URI'];
         $uri = strtok($uri, '?');
-        return new Request($method, $uri, $_GET, getallheaders());
+        return new Request($method, $uri, file_get_contents('php://input'), $_GET, getallheaders());
     }
 
     public function getMethod(): string
@@ -46,5 +45,15 @@ class Request
     public function getHeaders(): RequestParameters
     {
         return $this->headers;
+    }
+
+    public function getBody(): string|null
+    {
+        return $this->body;
+    }
+
+    public function getJsonBody(): array
+    {
+        return json_decode($this->body, true);
     }
 }

@@ -8,19 +8,14 @@ use Flawless\Http\Middleware\MiddlewareInterface;
 use Flawless\Http\Request\Request;
 use Flawless\Http\Response\Response;
 use Flawless\Http\Response\ResponseInterface;
-use Psr\Container\ContainerInterface;
+use Flawless\Kernel\Application;
 
-class HttpApplication
+class HttpApplication extends Application
 {
     /** @var Endpoint[] */
     protected array $endpoints = [];
 
     private array $globalMiddlewareClasses = [];
-
-    public function __construct(
-        protected ContainerInterface $container,
-    ) {
-    }
 
     public function execute(Request $request)
     {

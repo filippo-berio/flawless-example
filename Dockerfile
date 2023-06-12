@@ -7,8 +7,13 @@ RUN apt update \
     && apt install -y \
         wget \
         libzip-dev \
+        libpq-dev \
         git \
     && apt clean
+
+RUN docker-php-ext-install \
+        pdo \
+        pdo_pgsql
 
 
 RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet

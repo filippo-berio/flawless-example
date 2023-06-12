@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Snakee\Node;
+namespace App\Snakee\Node\Test;
 
 use Flawless\Snakee\Context\ContextInterface;
 use Flawless\Snakee\Node\NodeInterface;

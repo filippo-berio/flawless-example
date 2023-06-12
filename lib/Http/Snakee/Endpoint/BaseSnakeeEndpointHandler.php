@@ -18,7 +18,7 @@ abstract class BaseSnakeeEndpointHandler implements EndpointHandlerInterface
     public function handle(Request $request): ResponseInterface
     {
         if ($context = $this->getContext()) {
-            $this->manager->setContext($context);
+            $this->manager->withContext($context);
         }
         $context = $this->manager->run($this->getGraph());
         return $this->buildResponse($context);

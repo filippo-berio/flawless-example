@@ -2,11 +2,11 @@
 
 namespace Flawless\Snakee;
 
+use Flawless\Container\ContainerInterface;
 use Flawless\Snakee\Context\ContextInterface;
 use Flawless\Snakee\Context\ContextMiddlewareInterface;
 use Flawless\Snakee\Context\ExecutionContext;
 use Flawless\Snakee\Node\NodeInterface;
-use Psr\Container\ContainerInterface;
 
 class Snakee implements SnakeeConfiguratorInterface
 {
@@ -21,7 +21,7 @@ class Snakee implements SnakeeConfiguratorInterface
         $this->context = new ExecutionContext();
     }
 
-    public function setContext(ContextInterface $context): self
+    public function withContext(ContextInterface $context): self
     {
         $this->context = $context;
         return $this;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Endpoint;
+namespace App\Endpoint\Test;
 
-use App\Service\HelloService;
+use App\Service\Test\HelloService;
 use Flawless\Http\Endpoint\EndpointHandlerInterface;
 use Flawless\Http\Request\Request;
 use Flawless\Http\Response\Response;

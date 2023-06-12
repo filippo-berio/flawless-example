@@ -41,4 +41,9 @@ class ExecutionContext implements ContextInterface
         $this->data[$object::class] = $object;
         return $this;
     }
+
+    public function all(): array
+    {
+        return $this->data;
+    }
 }

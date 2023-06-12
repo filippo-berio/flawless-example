@@ -19,3 +19,20 @@ services:
         volumes:
             - ./:/app/
         container_name: flawless-example-php
+        depends_on:
+            - postgres
+
+
+    postgres:
+        image: postgres:14.6-alpine
+        container_name: flawless-example-postgres
+        environment:
+            POSTGRES_DB: ${PG_DB}
+            POSTGRES_PASSWORD: ${PG_PASS}
+            POSTGRES_USER: ${PG_USER}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data:rw
+
+
+volumes:
+    postgres_data:

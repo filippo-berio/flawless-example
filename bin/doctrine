@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
+use Flawless\Console\FlawlessConsole;
+use Flawless\Kernel\Plugin\Base\DoctrinePlugin;
+
+$root = dirname(__DIR__);
+require_once "$root/vendor/autoload.php";
+
+$flawless = FlawlessConsole::boot();
+$flawless->registerConfigFrom("$root/config/config.php");
+$flawless->enablePlugin(DoctrinePlugin::class);
+
+ConsoleRunner::run(
+    new SingleManagerProvider($flawless->getContainer()->get(EntityManagerInterface::class))
+);

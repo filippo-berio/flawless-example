@@ -3,7 +3,6 @@
 namespace Flawless\Container;
 
 use Flawless\Container\Exception\ContainerException;
-use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionParameter;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Snakee\Node;
+namespace App\Snakee\Node\Test;
 
-use App\Service\HelloService;
+use App\Service\Test\HelloService;
 use Flawless\Snakee\Context\ContextInterface;
 use Flawless\Snakee\Node\NodeInterface;
 

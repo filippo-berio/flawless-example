@@ -7,18 +7,22 @@ use Flawless\Http\Application\HttpApplication;
 use Flawless\Http\Endpoint\Endpoint;
 use Flawless\Http\Request\Request;
 use Flawless\Http\Snakee\Middleware\BaseRequestMiddleware;
+use Flawless\Kernel\ApplicationInterface;
+use Flawless\Kernel\FlawlessFacade;
 use Flawless\Snakee\Snakee;
 use Flawless\Snakee\SnakeeConfiguratorInterface;
 
-class FlawlessHttp
+class FlawlessHttp extends FlawlessFacade
 {
-    private Container $container;
-    private Request $request;
-    private ?Snakee $snakee = null;
+    protected Request $request;
+
+    /** @var HttpApplication */
+    protected ApplicationInterface $application;
 
     public function __construct(
-        private HttpApplication $application
+        ApplicationInterface $application
     ) {
+        parent::__construct($application);
     }
 
     public static function boot(): self
@@ -58,15 +62,6 @@ class FlawlessHttp
         }
 
         return $this->snakee;
-    }
-
-    public function registerConfigFrom(string $configFile): self
-    {
-        $params = require($configFile);
-        foreach ($params as $key => $value) {
-            $this->container->register($key, $value);
-        }
-        return $this;
     }
 
     public function registerEndpointsFrom(string $endpointsFile): self

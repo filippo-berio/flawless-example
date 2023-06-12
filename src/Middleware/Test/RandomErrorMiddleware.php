@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Test;
 
 use Exception;
 use Flawless\Http\Middleware\MiddlewareInterface;

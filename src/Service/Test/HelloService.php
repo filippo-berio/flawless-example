@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Test;
 
-use Psr\Container\ContainerInterface;
+
+use Flawless\Container\ContainerInterface;
 
 class HelloService
 {

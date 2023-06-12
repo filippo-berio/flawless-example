@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Test;
 
 use Flawless\Http\Middleware\MiddlewareInterface;
 use Flawless\Http\Request\Request;
