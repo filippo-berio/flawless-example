@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\PostLoad;
 
 #[Entity]
@@ -52,7 +51,7 @@ class Endpoint
     }
 
     #[PostLoad]
-    public function setGraph()
+    public function postLoad()
     {
         $this->graph = json_decode($this->graphJson, true);
     }

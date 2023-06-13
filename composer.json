@@ -2,7 +2,6 @@
     "name": "filippo-berio/flawless-example",
     "autoload": {
         "psr-4": {
-            "Flawless\\": "lib/",
             "App\\": "src/"
         }
     },
@@ -10,7 +9,8 @@
         "php": ">=8.2",
         "psr/container": "^2.0",
         "doctrine/orm": "^2.15",
-        "symfony/cache": "^6.3"
+        "symfony/cache": "^6.3",
+        "filippo-berio/flawless": "dev-master"
     },
     "require-dev": {
         "symfony/var-dumper": "^6.3"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dcd9703f680ae4b091a9270ed3fb0ff5",
+    "content-hash": "b2529d4ff28dcd1f77911e2acfe979a0",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -963,6 +963,42 @@
                 }
             ],
             "time": "2023-05-17T18:32:04+00:00"
+        },
+        {
+            "name": "filippo-berio/flawless",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filippo-berio/flawless.git",
+                "reference": "3e11d07c2bc7764f6f4833db8fdbd9b0aff49d62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filippo-berio/flawless/zipball/3e11d07c2bc7764f6f4833db8fdbd9b0aff49d62",
+                "reference": "3e11d07c2bc7764f6f4833db8fdbd9b0aff49d62",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/container": "^2.0"
+            },
+            "require-dev": {
+                "symfony/var-dumper": "^6.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Flawless\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Flawless microframework",
+            "support": {
+                "issues": "https://github.com/filippo-berio/flawless/issues",
+                "source": "https://github.com/filippo-berio/flawless/tree/master"
+            },
+            "time": "2023-06-13T15:39:03+00:00"
         },
         {
             "name": "psr/cache",
@@ -2263,7 +2299,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "filippo-berio/flawless": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
