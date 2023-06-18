@@ -5,12 +5,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 use Flawless\Console\FlawlessConsole;
-use Flawless\Kernel\Plugin\Base\DoctrinePlugin;
+use Flawless\Kernel\Plugin\DoctrinePlugin;
 
 $root = dirname(__DIR__);
 require_once "$root/vendor/autoload.php";
 
-$flawless = FlawlessConsole::boot();
+$flawless = FlawlessConsole::boot($root);
 $flawless->registerConfigFrom("$root/config/config.php");
 $flawless->enablePlugin(DoctrinePlugin::class);
 

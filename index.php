@@ -3,12 +3,12 @@
 use App\Middleware\Test\RequestStdoutMiddleware;
 use App\Snakee\Middleware\RequestContextMiddleware;
 use Flawless\Http\FlawlessHttp;
-use Flawless\Kernel\Plugin\Base\DoctrinePlugin;
+use Flawless\Kernel\Plugin\DoctrinePlugin;
 
 $root = __DIR__;
 require_once "$root/vendor/autoload.php";
 
-$flawless = FlawlessHttp::boot();
+$flawless = FlawlessHttp::boot($root);
 
 $flawless->registerConfigFrom("$root/config/config.php");
 $flawless->registerEndpointsFrom("$root/config/endpoints.php");

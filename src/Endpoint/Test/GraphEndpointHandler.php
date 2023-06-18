@@ -17,7 +17,7 @@ class GraphEndpointHandler extends BaseSnakeeEndpointHandler
         return new Response($context->get('response'));
     }
 
-    protected function getGraph(): array
+    public function getGraph(): array
     {
         return [
             NodeA::class => [

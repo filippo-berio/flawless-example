@@ -8,5 +8,4 @@ return [
     'dbPass' => 'root',
     'dbHost' => 'flawless-example-postgres',
     'dbName' => 'db',
-    'rootDir' => '/app',
 ];

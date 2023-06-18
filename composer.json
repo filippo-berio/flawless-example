@@ -9,7 +9,8 @@
         "php": ">=8.2",
         "doctrine/orm": "^2.15",
         "symfony/cache": "^6.3",
-        "filippo-berio/flawless": "dev-master"
+        "filippo-berio/flawless": "dev-master",
+        "symfony/finder": "*"
     },
     "require-dev": {
         "symfony/var-dumper": "^6.3"
